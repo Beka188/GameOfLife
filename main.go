@@ -50,7 +50,10 @@ func main() {
 }
 
 func printMatrix(m models.Matrix) {
-	fmt.Printf("%d   %d  \n\n", m.TickCount, m.DelayMs)
+	if m.IsVerbose {
+		fmt.Printf("Tick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %dms\n\n", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, m.DelayMs)
+	}
+	//fmt.Printf("%d   %d  \n\n", m.TickCount, m.DelayMs)
 	for _, row := range m.Body {
 		for j, cell := range row {
 			if cell.Live {

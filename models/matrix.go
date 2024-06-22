@@ -123,9 +123,19 @@ func NewMatrix() (*Matrix, error) {
 		}
 		break
 	}
-
+	liveCells := 0
+	for _, row := range body {
+		for _, cell := range row {
+			if cell.Live {
+				liveCells++
+			}
+		}
+	}
 	return &Matrix{
-		Body: body,
-		Size: rows,
+		Body:      body,
+		Size:      rows,
+		TickCount: 1,
+		DelayMs:   2500,
+		LiveCells: liveCells,
 	}, nil
 }
