@@ -8,13 +8,6 @@ import (
 	"time"
 )
 
-const (
-	ColorEmpty     = "\033[90m" // Grey
-	ColorLive      = "\033[93m" // Yellow
-	ColorFootprint = "\033[95m" // Magenta
-	ResetColor     = "\033[0m"
-)
-
 func main() {
 	isFlagsValid := utils.ReadFlags()
 	if !isFlagsValid {
@@ -43,19 +36,19 @@ func printMatrix(m models.Matrix) {
 				if !globals.IsColored {
 					fmt.Printf("x")
 				} else {
-					fmt.Print(ColorLive + "x" + ResetColor)
+					fmt.Print(globals.ColorLive + "x" + globals.ResetColor)
 				}
-			} else if cell.IsVisited {
+			} else if cell.IsVisited && globals.IsFootPrint {
 				if !globals.IsColored {
 					fmt.Printf("∘")
 				} else {
-					fmt.Printf(ColorFootprint + "∘" + ResetColor)
+					fmt.Printf(globals.ColorFootprint + "∘" + globals.ResetColor)
 				}
 			} else {
 				if !globals.IsColored {
-					fmt.Printf("∘")
+					fmt.Printf(".")
 				} else {
-					fmt.Printf(ColorEmpty + "." + ResetColor)
+					fmt.Printf(globals.ColorEmpty + "." + globals.ResetColor)
 				}
 			}
 			if j != len(row)-1 {
@@ -65,7 +58,6 @@ func printMatrix(m models.Matrix) {
 		fmt.Printf("\n")
 	}
 	fmt.Printf("\n")
-
 }
 
 func startGame(m *models.Matrix) {

@@ -28,11 +28,8 @@ func ReadFlags() bool {
 	flagRandom(*randomCord, &isValid)
 	flagFullScreen(*isFullScreen)
 	flagColored(*isColored)
-
-	fmt.Println(*isFullScreen)
-	fmt.Println(*isColored)
+	flagFootPrints(*isFootPrints)
 	fmt.Println(*isFile)
-	fmt.Println(*isFootPrints)
 
 	return isValid
 	//flags := [3]int{-1, -1, -1}
@@ -87,4 +84,8 @@ func flagRandom(random string, isValid *bool) {
 
 func flagColored(isColored bool) {
 	globals.IsColored = isColored
+}
+
+func flagFootPrints(isFootPrints bool) {
+	globals.IsFootPrint = isFootPrints
 }
