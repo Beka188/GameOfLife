@@ -24,6 +24,7 @@ func Move(m *Matrix) {
 	for i, row := range m.Body {
 		for j, _ := range row {
 			liveNeighborsCount := liveNeighbors(m.Body, i, j)
+			fmt.Println(i, j, liveNeighborsCount)
 			if m.Body[i][j].Live {
 				if liveNeighborsCount < 2 {
 					newMatrix[i][j].Live = false

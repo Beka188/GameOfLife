@@ -21,13 +21,7 @@ func main() {
 	ticker := time.NewTicker(globals.Interval)
 	defer ticker.Stop()
 
-	go func() {
-		for _ = range ticker.C {
-			models.Move(m)
-			printMatrix(*m)
-		}
-	}()
-	select {}
+	startGame(m)
 }
 
 func printMatrix(m models.Matrix) {
@@ -50,4 +44,14 @@ func printMatrix(m models.Matrix) {
 	}
 	fmt.Printf("\n")
 
+}
+
+func startGame(m *models.Matrix) {
+	for _ = range time.Tick(globals.Interval) {
+		models.Move(m)
+		printMatrix(*m)
+		if m.LiveCells == 0 {
+			break
+		}
+	}
 }
