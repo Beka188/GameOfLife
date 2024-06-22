@@ -10,14 +10,12 @@ import (
 
 func main() {
 	utils.ReadFlags()
-
-	m, err := models.NewMatrix()
+	m, err := models.NewMatrix(globals.RandomX != 0 || globals.RandomY != 0)
 	if err != nil {
 		panic(err)
 	} else {
 		printMatrix(*m)
 	}
-
 	ticker := time.NewTicker(globals.Interval)
 	defer ticker.Stop()
 

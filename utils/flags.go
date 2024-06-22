@@ -4,6 +4,8 @@ import (
 	"crunch03/globals"
 	"flag"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -15,6 +17,7 @@ func ReadFlags() {
 	var isFullScreen = flag.Bool("fullscreen", false, "Adjust the grid to fit the terminal size with empty cells")
 	var isFootPrints = flag.Bool("footprints", false, "Add traces of visited cells, displayed as '∘'")
 	var isColored = flag.Bool("colored", false, "Add color to live cells and traces if footprints are enabled")
+	var randomCord = flag.String("random", "", "Generate a random grid of the specified width (W) and height (H), min size 3x3")
 
 	var isValid = true
 	flag.Parse()
@@ -22,6 +25,7 @@ func ReadFlags() {
 	flagDelayMs(*ms, &isValid)
 	flagVerbose(*isVerbose)
 	flagEdgesPortal(*isEdgesPortal)
+	flagRandom(*randomCord, &isValid)
 
 	fmt.Println(*ms)
 	fmt.Println(*isEdgesPortal)
@@ -30,6 +34,7 @@ func ReadFlags() {
 	fmt.Println(*isFile)
 	fmt.Println(*isVerbose)
 	fmt.Println(*isFootPrints)
+	fmt.Println(*randomCord)
 
 	//flags := [3]int{-1, -1, -1}
 
@@ -54,4 +59,22 @@ func flagDelayMs(ms int, isValid *bool) {
 
 func flagEdgesPortal(isEdgesPortal bool) {
 	globals.IsEdgePortal = isEdgesPortal
+}
+
+func flagRandom(random string, isValid *bool) {
+	coordinates := strings.Split(random, "x")
+	fmt.Println("SADFSDFFD", coordinates)
+	if len(coordinates) != 2 {
+		*isValid = false
+		return
+	}
+	x, err1 := strconv.Atoi(coordinates[0])
+	y, er2 := strconv.Atoi(coordinates[1])
+	if err1 != nil || er2 != nil || x <= 2 || y <= 2 {
+		*isValid = false
+		return
+	}
+	globals.RandomX = x
+	globals.RandomY = y
+	fmt.Printf("COORDINATES   %d %d\n", globals.RandomX, globals.RandomY)
 }

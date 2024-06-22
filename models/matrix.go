@@ -2,8 +2,10 @@ package models
 
 import (
 	"bufio"
+	"crunch03/globals"
 	"errors"
 	"fmt"
+	"math/rand"
 	"os"
 	"strings"
 )
@@ -106,21 +108,39 @@ func promptGrid(rows, cols int) ([][]Cell, error) {
 }
 
 // NewMatrix creates a new Matrix from user's input
-func NewMatrix() (*Matrix, error) {
-	rows, cols, err := promptSize()
-	if err != nil {
-		return nil, err
+func NewMatrix(isRandom bool) (*Matrix, error) {
+	var body [][]Cell
+	if !isRandom {
+		rows, cols, err := promptSize()
+		if err != nil {
+			return nil, err
+		}
+
+		for {
+			body, err = promptGrid(rows, cols)
+			if err != nil {
+				fmt.Println("Invalid grid. Please re-enter the grid:")
+				continue
+			}
+			break
+		}
+	} else {
+		body = make([][]Cell, globals.RandomX)
+		for i := 0; i < globals.RandomX; i++ {
+			body[i] = make([]Cell, globals.RandomY)
+
+			for j := 0; j < globals.RandomY; j++ {
+				r := rand.Intn(2)
+				if r == 1 {
+					body[i][j].Live = true
+				} else {
+					body[i][j].Live = false
+				}
+			}
+		}
+
 	}
 
-	var body [][]Cell
-	for {
-		body, err = promptGrid(rows, cols)
-		if err != nil {
-			fmt.Println("Invalid grid. Please re-enter the grid:")
-			continue
-		}
-		break
-	}
 	liveCells := 0
 	for _, row := range body {
 		for _, cell := range row {
@@ -131,7 +151,6 @@ func NewMatrix() (*Matrix, error) {
 	}
 	return &Matrix{
 		Body:      body,
-		Size:      rows,
 		TickCount: 1,
 		LiveCells: liveCells,
 	}, nil
