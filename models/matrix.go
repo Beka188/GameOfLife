@@ -13,9 +13,7 @@ type Matrix struct {
 	Size      int
 	TickCount int
 	LiveCells int
-	DelayMs   int
 	IsVerbose bool
-	IsDelayMs bool
 }
 
 func Move(m *Matrix) {
@@ -135,7 +133,6 @@ func NewMatrix() (*Matrix, error) {
 		Body:      body,
 		Size:      rows,
 		TickCount: 1,
-		DelayMs:   2500,
 		LiveCells: liveCells,
 	}, nil
 }
