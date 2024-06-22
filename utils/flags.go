@@ -12,12 +12,12 @@ import (
 func ReadFlags() bool {
 	var ms = flag.Int("delay-ms", 2500, "Set the animation speed in milliseconds. Default is 2500 milliseconds")
 	var isVerbose = flag.Bool("verbose", false, "Display detailed information about the simulation, including grid size, number of ticks, speed, and map name")
-	var isFile = flag.Bool("file", false, "Load the initial grid from a specified file")
 	var isEdgesPortal = flag.Bool("edges-portal", false, "Enable portal edges where cells that exit the grid appear on the opposite side")
 	var isFullScreen = flag.Bool("fullscreen", false, "Adjust the grid to fit the terminal size with empty cells")
 	var isFootPrints = flag.Bool("footprints", false, "Add traces of visited cells, displayed as '∘'")
 	var isColored = flag.Bool("colored", false, "Add color to live cells and traces if footprints are enabled")
 	var randomCord = flag.String("random", "", "Generate a random grid of the specified width (W) and height (H), min size 3x3")
+	var file = flag.String("file", "", "Load the initial grid from a specified file")
 
 	var isValid = true
 	flag.Parse()
@@ -29,7 +29,8 @@ func ReadFlags() bool {
 	flagFullScreen(*isFullScreen)
 	flagColored(*isColored)
 	flagFootPrints(*isFootPrints)
-	fmt.Println(*isFile)
+	flagFile(*file, &isValid)
+	//fmt.Println(*isFile)
 
 	return isValid
 	//flags := [3]int{-1, -1, -1}
@@ -88,4 +89,12 @@ func flagColored(isColored bool) {
 
 func flagFootPrints(isFootPrints bool) {
 	globals.IsFootPrint = isFootPrints
+}
+
+func flagFile(file string, isValid *bool) {
+	if file == "" {
+		*isValid = false
+		return
+	}
+	globals.FileName = file
 }

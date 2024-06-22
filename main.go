@@ -13,7 +13,7 @@ func main() {
 	if !isFlagsValid {
 		return
 	}
-	m, err := models.NewMatrix(globals.RandomX != 0 && globals.RandomY != 0) // globals.RandomX != 0 || globals.RandomY != 0
+	m, err := utils.NewMatrix(globals.RandomX != 0 && globals.RandomY != 0) // globals.RandomX != 0 || globals.RandomY != 0
 	if err != nil {
 		panic(err)
 	} else {
@@ -62,7 +62,7 @@ func printMatrix(m models.Matrix) {
 
 func startGame(m *models.Matrix) {
 	for _ = range time.Tick(globals.Interval) {
-		models.Move(m)
+		utils.Move(m)
 		printMatrix(*m)
 		if m.LiveCells == 0 {
 			break
