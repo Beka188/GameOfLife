@@ -25,7 +25,7 @@ func ReadFlags() {
 	flagDelayMs(*ms, &isValid)
 	flagVerbose(*isVerbose)
 	flagEdgesPortal(*isEdgesPortal)
-	flagRandom(*randomCord, &isValid)
+	//flagRandom(*randomCord, &isValid)
 
 	fmt.Println(*ms)
 	fmt.Println(*isEdgesPortal)

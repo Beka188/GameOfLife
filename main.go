@@ -10,7 +10,7 @@ import (
 
 func main() {
 	utils.ReadFlags()
-	m, err := models.NewMatrix(globals.RandomX != 0 || globals.RandomY != 0)
+	m, err := models.NewMatrix(false) // globals.RandomX != 0 || globals.RandomY != 0
 	if err != nil {
 		panic(err)
 	} else {
