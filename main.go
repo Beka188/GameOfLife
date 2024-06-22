@@ -1,47 +1,44 @@
 package main
 
-import "fmt"
+import (
+	"crunch03/models"
+	"fmt"
+	"github.com/eiannone/keyboard"
+	"log"
+)
 
 func main() {
-	arr := make([][]cell, 6)
-	for i := range arr {
-		arr[i] = make([]cell, 6)
+	m, err := models.NewMatrix()
+	if err != nil {
+		panic(err)
+	} else {
+		printMatrix(*m)
 	}
-	arr[1][2].live = true
-	arr[1][3].live = true
-	arr[2][1].live = true
-	arr[2][2].live = true
-	arr[3][2].live = true
-	arr[3][3].live = true
-	arr[4][2].live = true
-	arr[4][3].live = true
-	m := matrix{
-		body:      arr,
-		size:      6,
-		tickCount: 0,
-		liveCells: 0,
-		delayMs:   0,
-		isVerbose: false,
-		isDelayMs: false,
+	if err := keyboard.Open(); err != nil {
+		log.Fatal(err)
 	}
+	defer keyboard.Close()
 
-	printMatrix(m.body)
-	//fmt.Println()
-	move(&m)
-	printMatrix(m.body)
-	//printMatrix(matrix)
-	//
-	//fmt.Println()
-	//
-	//matrix = move(matrix)
-	//printMatrix(matrix)
+	for {
+		char, key, err := keyboard.GetKey()
+		if err != nil {
+			log.Fatal(err)
+		}
 
+		if key == keyboard.KeyArrowRight {
+			models.Move(m)
+			printMatrix(*m)
+		} else if char == 'q' || key == keyboard.KeyCtrlC {
+			break
+		}
+	}
 }
 
-func printMatrix(matrix [][]cell) {
-	for _, row := range matrix {
+func printMatrix(m models.Matrix) {
+	fmt.Printf("%d\n\n", m.TickCount)
+	for _, row := range m.Body {
 		for j, cell := range row {
-			if cell.live {
+			if cell.Live {
 				fmt.Printf("x")
 			} else {
 				fmt.Printf(".")
@@ -52,15 +49,17 @@ func printMatrix(matrix [][]cell) {
 		}
 		fmt.Printf("\n")
 	}
+	fmt.Printf("\n")
+
 }
 
-func (m *matrix) countLiveCells() {
-	m.liveCells = 0
-	for i := 0; i < m.size; i++ {
-		for j := 0; j < m.size; j++ {
-			if m.body[i][j].live {
-				m.liveCells++
-			}
-		}
-	}
-}
+//func (m *matrix) countLiveCells() {
+//	m.liveCells = 0
+//	for i := 0; i < m.size; i++ {
+//		for j := 0; j < m.size; j++ {
+//			if m.body[i][j].live {
+//				m.liveCells++
+//			}
+//		}
+//	}
+//}
