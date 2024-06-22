@@ -8,6 +8,13 @@ import (
 	"time"
 )
 
+const (
+	ColorEmpty     = "\033[90m" // Grey
+	ColorLive      = "\033[93m" // Yellow
+	ColorFootprint = "\033[95m" // Magenta
+	ResetColor     = "\033[0m"
+)
+
 func main() {
 	isFlagsValid := utils.ReadFlags()
 	if !isFlagsValid {
@@ -33,11 +40,23 @@ func printMatrix(m models.Matrix) {
 	for _, row := range m.Body {
 		for j, cell := range row {
 			if cell.Live {
-				fmt.Printf("x")
+				if !globals.IsColored {
+					fmt.Printf("x")
+				} else {
+					fmt.Print(ColorLive + "x" + ResetColor)
+				}
 			} else if cell.IsVisited {
-				fmt.Printf("∘")
+				if !globals.IsColored {
+					fmt.Printf("∘")
+				} else {
+					fmt.Printf(ColorFootprint + "∘" + ResetColor)
+				}
 			} else {
-				fmt.Printf(".")
+				if !globals.IsColored {
+					fmt.Printf("∘")
+				} else {
+					fmt.Printf(ColorEmpty + "." + ResetColor)
+				}
 			}
 			if j != len(row)-1 {
 				fmt.Printf(" ")

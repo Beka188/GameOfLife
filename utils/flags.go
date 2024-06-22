@@ -27,6 +27,8 @@ func ReadFlags() bool {
 	flagEdgesPortal(*isEdgesPortal)
 	flagRandom(*randomCord, &isValid)
 	flagFullScreen(*isFullScreen)
+	flagColored(*isColored)
+
 	fmt.Println(*isFullScreen)
 	fmt.Println(*isColored)
 	fmt.Println(*isFile)
@@ -81,4 +83,8 @@ func flagRandom(random string, isValid *bool) {
 	}
 	globals.RandomX = x
 	globals.RandomY = y
+}
+
+func flagColored(isColored bool) {
+	globals.IsColored = isColored
 }
