@@ -13,7 +13,6 @@ type Matrix struct {
 	Size      int
 	TickCount int
 	LiveCells int
-	IsVerbose bool
 }
 
 func Move(m *Matrix) {

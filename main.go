@@ -31,8 +31,8 @@ func main() {
 }
 
 func printMatrix(m models.Matrix) {
-	if m.IsVerbose {
-		fmt.Printf("Tick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %dms\n\n", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, globals.Interval)
+	if globals.IsVerbose {
+		fmt.Printf("Tick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %v\n\n", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, globals.Interval)
 	}
 
 	for _, row := range m.Body {

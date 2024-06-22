@@ -19,11 +19,8 @@ func ReadFlags() {
 	var isValid = true
 	flag.Parse()
 
-	fmt.Println(*ms)
-	fmt.Println()
-	fmt.Println()
-
 	flagDelayMs(*ms, &isValid)
+	flagVerbose(*isVerbose)
 	fmt.Println(*ms)
 	fmt.Println(*isEdgesPortal)
 	fmt.Println(*isFullScreen)
@@ -40,8 +37,8 @@ func flagHelp() {
 
 }
 
-func flagVerbose(isVerbose bool, isValid *bool) {
-
+func flagVerbose(isVerbose bool) {
+	globals.IsVerbose = isVerbose
 }
 
 func flagDelayMs(ms int, isValid *bool) {
