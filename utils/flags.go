@@ -26,7 +26,7 @@ func ReadFlags() bool {
 	flagVerbose(*isVerbose)
 	flagEdgesPortal(*isEdgesPortal)
 	flagRandom(*randomCord, &isValid)
-
+	flagFullScreen(*isFullScreen)
 	fmt.Println(*isFullScreen)
 	fmt.Println(*isColored)
 	fmt.Println(*isFile)
@@ -46,9 +46,9 @@ func flagVerbose(isVerbose bool) {
 }
 
 func flagDelayMs(ms int, isValid *bool) {
-
 	if ms <= 0 {
 		*isValid = false
+		fmt.Println("Invalid delay ms, please enter positive integer.\nSee --help for more information.")
 		return
 	}
 	globals.Interval = time.Duration(ms) * time.Millisecond
@@ -58,8 +58,15 @@ func flagEdgesPortal(isEdgesPortal bool) {
 	globals.IsEdgePortal = isEdgesPortal
 }
 
+func flagFullScreen(isFullScreen bool) {
+	globals.IsFullScreen = isFullScreen
+}
+
 func flagRandom(random string, isValid *bool) {
 	coordinates := strings.Split(random, "x")
+	if random == "" {
+		return
+	}
 	if len(coordinates) != 2 {
 		fmt.Println("Invalid format, provide two numbers in x between them.\nSee --help for more information.")
 		*isValid = false
@@ -74,5 +81,4 @@ func flagRandom(random string, isValid *bool) {
 	}
 	globals.RandomX = x
 	globals.RandomY = y
-	fmt.Printf("COORDINATES   %d %d\n", globals.RandomX, globals.RandomY)
 }

@@ -5,6 +5,7 @@ import (
 	"crunch03/globals"
 	"errors"
 	"fmt"
+	"golang.org/x/term"
 	"math/rand"
 	"os"
 	"strings"
@@ -73,12 +74,22 @@ func promptSize() (int, int, error) {
 
 // promptGrid asks for the grid input and validates it
 func promptGrid(rows, cols int) ([][]Cell, error) {
+	x, y := 0, 0
+	if globals.IsFullScreen {
+		y, x, _ = term.GetSize(int(os.Stdin.Fd()))
+	}
+	y = y / 2
+
 	fmt.Println("Enter the grid:")
 
 	scanner := bufio.NewScanner(os.Stdin)
-	body := make([][]Cell, rows)
+	body := make([][]Cell, max(rows, x))
 
-	for i := 0; i < rows; i++ {
+	for i := 0; i < max(rows, x); i++ {
+		body[i] = make([]Cell, max(cols, y))
+		if i >= rows { // fullscreen
+			continue
+		}
 		if !scanner.Scan() {
 			return nil, errors.New("not enough rows in input")
 		}
@@ -86,7 +97,6 @@ func promptGrid(rows, cols int) ([][]Cell, error) {
 		if len(line) != cols {
 			return nil, fmt.Errorf("number of columns in row %d (%d) does not match specified size (%d)", i, len(line), cols)
 		}
-		body[i] = make([]Cell, cols)
 		for j, char := range line {
 			switch char {
 			case '#':
@@ -106,10 +116,12 @@ func promptGrid(rows, cols int) ([][]Cell, error) {
 	return body, nil
 }
 
-// NewMatrix creates a new Matrix from user's input
+// NewMatrix creates a new Matrix from user's input or random according to global X and Y constants
 func NewMatrix(isRandom bool) (*Matrix, error) {
 	var body [][]Cell
+	fmt.Println("dfSDF", isRandom)
 	if !isRandom {
+		fmt.Println("SDF")
 		rows, cols, err := promptSize()
 		if err != nil {
 			return nil, err
@@ -125,7 +137,6 @@ func NewMatrix(isRandom bool) (*Matrix, error) {
 	} else {
 		body = generateRandomGrid(globals.RandomX, globals.RandomY)
 	}
-
 	liveCells := 0
 	for _, row := range body {
 		for _, cell := range row {
@@ -142,9 +153,17 @@ func NewMatrix(isRandom bool) (*Matrix, error) {
 }
 
 func generateRandomGrid(rows, cols int) [][]Cell {
-	body := make([][]Cell, rows)
-	for i := 0; i < rows; i++ {
-		body[i] = make([]Cell, cols)
+	x, y := 0, 0
+	if globals.IsFullScreen {
+		y, x, _ = term.GetSize(int(os.Stdin.Fd()))
+	}
+	y = y / 2
+	body := make([][]Cell, max(rows, x))
+	for i := 0; i < max(rows, x); i++ {
+		body[i] = make([]Cell, max(cols, y))
+		if i >= rows {
+			continue
+		}
 		for j := 0; j < cols; j++ {
 			r := rand.Intn(2)
 			if r == 1 {
@@ -153,5 +172,6 @@ func generateRandomGrid(rows, cols int) [][]Cell {
 			}
 		}
 	}
+	fmt.Printf("size  %d %d\n", len(body), len(body[0]))
 	return body
 }
