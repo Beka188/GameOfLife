@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	arr, e := utils.ReadFlags()
 	if e != nil {
 		log.Fatal(e)
@@ -53,7 +54,6 @@ func printMatrix(m models.Matrix) {
 	if m.IsVerbose {
 		fmt.Printf("Tick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %dms\n\n", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, m.DelayMs)
 	}
-	//fmt.Printf("%d   %d  \n\n", m.TickCount, m.DelayMs)
 	for _, row := range m.Body {
 		for j, cell := range row {
 			if cell.Live {
@@ -70,14 +70,3 @@ func printMatrix(m models.Matrix) {
 	fmt.Printf("\n")
 
 }
-
-//func (m *matrix) countLiveCells() {
-//	m.liveCells = 0
-//	for i := 0; i < m.size; i++ {
-//		for j := 0; j < m.size; j++ {
-//			if m.body[i][j].live {
-//				m.liveCells++
-//			}
-//		}
-//	}
-//}
