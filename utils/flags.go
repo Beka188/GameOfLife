@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func ReadFlags() {
+func ReadFlags() bool {
 	var ms = flag.Int("delay-ms", 2500, "Set the animation speed in milliseconds. Default is 2500 milliseconds")
 	var isVerbose = flag.Bool("verbose", false, "Display detailed information about the simulation, including grid size, number of ticks, speed, and map name")
 	var isFile = flag.Bool("file", false, "Load the initial grid from a specified file")
@@ -25,17 +25,14 @@ func ReadFlags() {
 	flagDelayMs(*ms, &isValid)
 	flagVerbose(*isVerbose)
 	flagEdgesPortal(*isEdgesPortal)
-	//flagRandom(*randomCord, &isValid)
+	flagRandom(*randomCord, &isValid)
 
-	fmt.Println(*ms)
-	fmt.Println(*isEdgesPortal)
 	fmt.Println(*isFullScreen)
 	fmt.Println(*isColored)
 	fmt.Println(*isFile)
-	fmt.Println(*isVerbose)
 	fmt.Println(*isFootPrints)
-	fmt.Println(*randomCord)
 
+	return isValid
 	//flags := [3]int{-1, -1, -1}
 
 }
@@ -63,14 +60,15 @@ func flagEdgesPortal(isEdgesPortal bool) {
 
 func flagRandom(random string, isValid *bool) {
 	coordinates := strings.Split(random, "x")
-	fmt.Println("SADFSDFFD", coordinates)
 	if len(coordinates) != 2 {
+		fmt.Println("Invalid format, provide two numbers in x between them.\nSee --help for more information.")
 		*isValid = false
 		return
 	}
 	x, err1 := strconv.Atoi(coordinates[0])
 	y, er2 := strconv.Atoi(coordinates[1])
 	if err1 != nil || er2 != nil || x <= 2 || y <= 2 {
+		fmt.Println("Random flag need two numbers and higher than 2.\nSee --help for more information.")
 		*isValid = false
 		return
 	}

@@ -22,11 +22,9 @@ func Move(m *Matrix) {
 	for i := range newMatrix {
 		newMatrix[i] = make([]Cell, len(m.Body[0]))
 	}
-
 	for i, row := range m.Body {
 		for j, _ := range row {
 			liveNeighborsCount := liveNeighbors(m.Body, i, j)
-			//fmt.Println(i, j, liveNeighborsCount)
 			if m.Body[i][j].Live {
 				if liveNeighborsCount < 2 {
 					newMatrix[i][j].Live = false
@@ -45,8 +43,9 @@ func Move(m *Matrix) {
 	m.LiveCells = 0
 	for i, row := range m.Body {
 		for j, _ := range row {
-			m.Body[i][j] = newMatrix[i][j]
+			m.Body[i][j].Live = newMatrix[i][j].Live
 			if m.Body[i][j].Live {
+				m.Body[i][j].IsVisited = true
 				m.LiveCells++
 			}
 		}
@@ -115,7 +114,6 @@ func NewMatrix(isRandom bool) (*Matrix, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		for {
 			body, err = promptGrid(rows, cols)
 			if err != nil {
@@ -125,20 +123,7 @@ func NewMatrix(isRandom bool) (*Matrix, error) {
 			break
 		}
 	} else {
-		body = make([][]Cell, globals.RandomX)
-		for i := 0; i < globals.RandomX; i++ {
-			body[i] = make([]Cell, globals.RandomY)
-
-			for j := 0; j < globals.RandomY; j++ {
-				r := rand.Intn(2)
-				if r == 1 {
-					body[i][j].Live = true
-				} else {
-					body[i][j].Live = false
-				}
-			}
-		}
-
+		body = generateRandomGrid(globals.RandomX, globals.RandomY)
 	}
 
 	liveCells := 0
@@ -154,4 +139,19 @@ func NewMatrix(isRandom bool) (*Matrix, error) {
 		TickCount: 1,
 		LiveCells: liveCells,
 	}, nil
+}
+
+func generateRandomGrid(rows, cols int) [][]Cell {
+	body := make([][]Cell, rows)
+	for i := 0; i < rows; i++ {
+		body[i] = make([]Cell, cols)
+		for j := 0; j < cols; j++ {
+			r := rand.Intn(2)
+			if r == 1 {
+				body[i][j].Live = true
+				body[i][j].IsVisited = true
+			}
+		}
+	}
+	return body
 }

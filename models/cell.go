@@ -1,5 +1,6 @@
 package models
 
 type Cell struct {
-	Live bool
+	Live      bool
+	IsVisited bool
 }

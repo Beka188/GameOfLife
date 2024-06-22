@@ -9,8 +9,11 @@ import (
 )
 
 func main() {
-	utils.ReadFlags()
-	m, err := models.NewMatrix(false) // globals.RandomX != 0 || globals.RandomY != 0
+	isFlagsValid := utils.ReadFlags()
+	if !isFlagsValid {
+		return
+	}
+	m, err := models.NewMatrix(globals.RandomX != 0 && globals.RandomY != 0) // globals.RandomX != 0 || globals.RandomY != 0
 	if err != nil {
 		panic(err)
 	} else {
@@ -31,6 +34,8 @@ func printMatrix(m models.Matrix) {
 		for j, cell := range row {
 			if cell.Live {
 				fmt.Printf("x")
+			} else if cell.IsVisited {
+				fmt.Printf("∘")
 			} else {
 				fmt.Printf(".")
 			}
