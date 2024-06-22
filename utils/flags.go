@@ -21,6 +21,8 @@ func ReadFlags() {
 
 	flagDelayMs(*ms, &isValid)
 	flagVerbose(*isVerbose)
+	flagEdgesPortal(*isEdgesPortal)
+
 	fmt.Println(*ms)
 	fmt.Println(*isEdgesPortal)
 	fmt.Println(*isFullScreen)
@@ -48,4 +50,8 @@ func flagDelayMs(ms int, isValid *bool) {
 		return
 	}
 	globals.Interval = time.Duration(ms) * time.Millisecond
+}
+
+func flagEdgesPortal(isEdgesPortal bool) {
+	globals.IsEdgePortal = isEdgesPortal
 }
