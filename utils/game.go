@@ -5,7 +5,7 @@ import (
 	"crunch03/models"
 )
 
-func Move(m *models.Matrix) {
+func Move(m *models.Board) {
 	newMatrix := make([][]models.Cell, len(m.Body))
 	for i := range newMatrix {
 		newMatrix[i] = make([]models.Cell, len(m.Body[0]))
