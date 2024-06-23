@@ -29,11 +29,9 @@ func ReadFlags() bool {
 	flagFullScreen(*isFullScreen)
 	flagColored(*isColored)
 	flagFootPrints(*isFootPrints)
-	flagFile(*file, &isValid)
-	//fmt.Println(*isFile)
+	flagFile(*file)
 
 	return isValid
-	//flags := [3]int{-1, -1, -1}
 
 }
 
@@ -91,9 +89,8 @@ func flagFootPrints(isFootPrints bool) {
 	globals.IsFootPrint = isFootPrints
 }
 
-func flagFile(file string, isValid *bool) {
+func flagFile(file string) {
 	if file == "" {
-		*isValid = false
 		return
 	}
 	globals.FileName = file

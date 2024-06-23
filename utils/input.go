@@ -14,7 +14,6 @@ import (
 
 func NewMatrix(isRandom bool) (*models.Matrix, error) {
 	var body [][]models.Cell
-	fmt.Println("dfSDF", isRandom)
 	if globals.FileName != "" {
 		var err error
 		body, err = readInputFromFile()
@@ -22,7 +21,6 @@ func NewMatrix(isRandom bool) (*models.Matrix, error) {
 			return nil, err
 		}
 	} else if !isRandom {
-		fmt.Println("SDF")
 		rows, cols, err := promptSize()
 		if err != nil {
 			return nil, err
@@ -81,7 +79,8 @@ func promptSize() (int, int, error) {
 	var rows, cols int
 	for {
 		fmt.Print("Enter the size of the matrix (rows cols): ")
-		if _, err := fmt.Scanf("%d %d", &rows, &cols); err != nil {
+		_, err := fmt.Scanf("%d %d", &rows, &cols)
+		if err != nil {
 			fmt.Println("Invalid dimensions. Please enter two integers.")
 			continue
 		}
@@ -140,6 +139,12 @@ func promptGrid(rows, cols int) ([][]models.Cell, error) {
 
 // readInputFromFile reads grid size and grid data from a file
 func readInputFromFile() ([][]models.Cell, error) {
+	x, y := 0, 0
+	if globals.IsFullScreen {
+		y, x, _ = term.GetSize(int(os.Stdin.Fd()))
+	}
+	y = y / 2
+
 	content, err := os.ReadFile(globals.FileName)
 	if err != nil {
 		return nil, fmt.Errorf("could not open file: %w", err)
@@ -150,18 +155,25 @@ func readInputFromFile() ([][]models.Cell, error) {
 	if _, err := fmt.Sscanf(sizeLine, "%d %d", &rows, &cols); err != nil {
 		return nil, fmt.Errorf("invalid size format in file: %w", err)
 	}
-	// Read the grid data
-	body := make([][]models.Cell, rows)
-	for i := 0; i < rows && i <= len(cont); i++ {
+	body := make([][]models.Cell, max(x, rows))
+	for i := 0; i < max(rows, x); i++ {
+		body[i] = make([]models.Cell, max(cols, y))
+		if i >= rows {
+			continue
+		}
 		line := strings.TrimSpace(cont[i+1])
-		if len(line) != cols {
+		if len(line) < cols {
 			return nil, fmt.Errorf("number of columns in row %d (%d) does not match specified size (%d)", i, len(line), cols)
 		}
-		body[i] = make([]models.Cell, cols)
-		for j, char := range line {
+		for j := 0; j < max(cols, y); j++ {
+			if j >= len(line) {
+				continue
+			}
+			char := line[j]
 			switch char {
 			case '#':
 				body[i][j].Live = true
+				body[i][j].IsVisited = true
 			case '.':
 				body[i][j].Live = false
 			default:
@@ -169,5 +181,7 @@ func readInputFromFile() ([][]models.Cell, error) {
 			}
 		}
 	}
+
+	fmt.Printf("%d   %d\n", len(body), len(body[0]))
 	return body, nil
 }

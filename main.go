@@ -27,10 +27,10 @@ func main() {
 
 func printMatrix(m models.Matrix) {
 	if globals.IsVerbose {
-		fmt.Printf("Tick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %v\n\n", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, globals.Interval)
+		fmt.Printf("Tick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %v", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, globals.Interval)
 	}
-
-	for _, row := range m.Body {
+	fmt.Printf("\n\n")
+	for i, row := range m.Body {
 		for j, cell := range row {
 			if cell.Live {
 				if !globals.IsColored {
@@ -55,12 +55,17 @@ func printMatrix(m models.Matrix) {
 				fmt.Printf(" ")
 			}
 		}
-		fmt.Printf("\n")
+		if i != len(m.Body)-1 {
+			fmt.Printf("\n")
+		}
 	}
-	fmt.Printf("\n")
+	//fmt.Printf("\n")
 }
 
 func startGame(m *models.Matrix) {
+	if m.LiveCells == 0 {
+		return
+	}
 	for _ = range time.Tick(globals.Interval) {
 		utils.Move(m)
 		printMatrix(*m)
