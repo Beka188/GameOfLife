@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	isFlagsValid := utils.ReadFlags()
 	if !isFlagsValid {
 		return
@@ -25,9 +26,9 @@ func main() {
 	startGame(m)
 }
 
-func printMatrix(m models.Matrix) {
+func printMatrix(m models.Board) {
 	if globals.IsVerbose {
-		fmt.Printf("Tick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %v", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, globals.Interval)
+		fmt.Printf("\nTick: %d\nGrid Size: %dx%d\nLive Cells: %d\nDelayMs: %v", m.TickCount, len(m.Body), len(m.Body[0]), m.LiveCells, globals.Interval)
 	}
 	fmt.Printf("\n\n")
 	for i, row := range m.Body {
@@ -62,7 +63,7 @@ func printMatrix(m models.Matrix) {
 	//fmt.Printf("\n")
 }
 
-func startGame(m *models.Matrix) {
+func startGame(m *models.Board) {
 	if m.LiveCells == 0 {
 		return
 	}

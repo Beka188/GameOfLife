@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func NewMatrix(isRandom bool) (*models.Matrix, error) {
+func NewMatrix(isRandom bool) (*models.Board, error) {
 	var body [][]models.Cell
 	if globals.FileName != "" {
 		var err error
@@ -44,7 +44,7 @@ func NewMatrix(isRandom bool) (*models.Matrix, error) {
 			}
 		}
 	}
-	return &models.Matrix{
+	return &models.Board{
 		Body:      body,
 		TickCount: 1,
 		LiveCells: liveCells,

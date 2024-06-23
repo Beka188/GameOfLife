@@ -4,12 +4,15 @@ import (
 	"crunch03/globals"
 	"flag"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
 func ReadFlags() bool {
+	var isValid = true
+
 	var ms = flag.Int("delay-ms", 2500, "Set the animation speed in milliseconds. Default is 2500 milliseconds")
 	var isVerbose = flag.Bool("verbose", false, "Display detailed information about the simulation, including grid size, number of ticks, speed, and map name")
 	var isEdgesPortal = flag.Bool("edges-portal", false, "Enable portal edges where cells that exit the grid appear on the opposite side")
@@ -19,13 +22,24 @@ func ReadFlags() bool {
 	var randomCord = flag.String("random", "", "Generate a random grid of the specified width (W) and height (H), min size 3x3")
 	var file = flag.String("file", "", "Load the initial grid from a specified file")
 
-	var isValid = true
 	flag.Parse()
+
+	for _, arg := range os.Args[1:] {
+		if strings.HasPrefix(arg, "--random") || strings.HasPrefix(arg, "-random") {
+			flagRandom(*randomCord, &isValid)
+		} else if strings.HasPrefix(arg, "-file") || strings.HasPrefix(arg, "--file") {
+			flagFile(*file)
+		} else if strings.HasPrefix(arg, "-verbose") || strings.HasPrefix(arg, "--verbose") {
+			flagVerbose(*isVerbose)
+		} else if strings.HasPrefix(arg, "-fullscreen") || strings.HasPrefix(arg, "--fullscreen") {
+			flagFullScreen(*isFullScreen)
+		}
+	}
 
 	flagDelayMs(*ms, &isValid)
 	flagVerbose(*isVerbose)
-	flagEdgesPortal(*isEdgesPortal)
 	flagRandom(*randomCord, &isValid)
+	flagEdgesPortal(*isEdgesPortal)
 	flagFullScreen(*isFullScreen)
 	flagColored(*isColored)
 	flagFootPrints(*isFootPrints)
@@ -40,6 +54,9 @@ func flagHelp() {
 }
 
 func flagVerbose(isVerbose bool) {
+	if globals.IsFullScreen {
+		return
+	}
 	globals.IsVerbose = isVerbose
 }
 
@@ -57,12 +74,15 @@ func flagEdgesPortal(isEdgesPortal bool) {
 }
 
 func flagFullScreen(isFullScreen bool) {
+	if globals.IsVerbose {
+		return
+	}
 	globals.IsFullScreen = isFullScreen
 }
 
 func flagRandom(random string, isValid *bool) {
 	coordinates := strings.Split(random, "x")
-	if random == "" {
+	if random == "" || globals.FileName != "" {
 		return
 	}
 	if len(coordinates) != 2 {
@@ -90,7 +110,7 @@ func flagFootPrints(isFootPrints bool) {
 }
 
 func flagFile(file string) {
-	if file == "" {
+	if file == "" || globals.RandomX != 0 || globals.RandomY != 0 {
 		return
 	}
 	globals.FileName = file
