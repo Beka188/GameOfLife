@@ -72,7 +72,6 @@ func generateRandomGrid(rows, cols int) [][]models.Cell {
 			}
 		}
 	}
-	fmt.Printf("size  %d %d\n", len(body), len(body[0]))
 	return body
 }
 
