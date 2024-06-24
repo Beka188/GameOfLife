@@ -11,19 +11,22 @@ import (
 )
 
 func ReadFlags() bool {
-	var isValid = true
+	isValid := true
 
-	var ms = flag.Int("delay-ms", 2500, "Set the animation speed in milliseconds. Default is 2500 milliseconds")
-	var isVerbose = flag.Bool("verbose", false, "Display detailed information about the simulation, including grid size, number of ticks, speed, and map name")
-	var isEdgesPortal = flag.Bool("edges-portal", false, "Enable portal edges where cells that exit the grid appear on the opposite side")
-	var isFullScreen = flag.Bool("fullscreen", false, "Adjust the grid to fit the terminal size with empty cells")
-	var isFootPrints = flag.Bool("footprints", false, "Add traces of visited cells, displayed as '∘'")
-	var isColored = flag.Bool("colored", false, "Add color to live cells and traces if footprints are enabled")
-	var randomCord = flag.String("random", "", "Generate a random grid of the specified width (W) and height (H), min size 3x3")
-	var file = flag.String("file", "", "Load the initial grid from a specified file")
+	// Использование флагов Имя/базовое значение/описание
+	ms := flag.Int("delay-ms", 2500, "Set the animation speed in milliseconds. Default is 2500 milliseconds")
+	isVerbose := flag.Bool("verbose", false, "Display detailed information about the simulation, including grid size, number of ticks, speed, and map name")
+	isEdgesPortal := flag.Bool("edges-portal", false, "Enable portal edges where cells that exit the grid appear on the opposite side")
+	isFullScreen := flag.Bool("fullscreen", false, "Adjust the grid to fit the terminal size with empty cells")
+	isFootPrints := flag.Bool("footprints", false, "Add traces of visited cells, displayed as '∘'")
+	isColored := flag.Bool("colored", false, "Add color to live cells and traces if footprints are enabled")
+	randomCord := flag.String("random", "", "Generate a random grid of the specified width (W) and height (H), min size 3x3")
+	file := flag.String("file", "", "Load the initial grid from a specified file")
 
+	// Разбирает все зарегистрированные флаги командной строки
 	flag.Parse()
 
+	// Перебор аргументов командной строки
 	for _, arg := range os.Args[1:] {
 		if strings.HasPrefix(arg, "--random") || strings.HasPrefix(arg, "-random") {
 			flagRandom(*randomCord, &isValid)
@@ -36,6 +39,7 @@ func ReadFlags() bool {
 		}
 	}
 
+	// Вызов функций для всех флагов
 	flagDelayMs(*ms, &isValid)
 	flagVerbose(*isVerbose)
 	flagRandom(*randomCord, &isValid)
@@ -46,11 +50,9 @@ func ReadFlags() bool {
 	flagFile(*file)
 
 	return isValid
-
 }
 
 func flagHelp() {
-
 }
 
 func flagVerbose(isVerbose bool) {
