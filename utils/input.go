@@ -6,10 +6,11 @@ import (
 	"crunch03/models"
 	"errors"
 	"fmt"
-	"golang.org/x/term"
 	"math/rand"
 	"os"
 	"strings"
+
+	"golang.org/x/term"
 )
 
 func NewMatrix(isRandom bool) (*models.Board, error) {
@@ -50,15 +51,16 @@ func NewMatrix(isRandom bool) (*models.Board, error) {
 		LiveCells: liveCells,
 	}, nil
 }
+
 func generateRandomGrid(rows, cols int) [][]models.Cell {
 	x, y := 0, 0
 	if globals.IsFullScreen {
 		y, x, _ = term.GetSize(int(os.Stdin.Fd()))
 	}
 	y = y / 2
-	body := make([][]models.Cell, max(rows, x))
-	for i := 0; i < max(rows, x); i++ {
-		body[i] = make([]models.Cell, max(cols, y))
+	body := make([][]models.Cell, customMax(rows, x))
+	for i := 0; i < customMax(rows, x); i++ {
+		body[i] = make([]models.Cell, customMax(cols, y))
 		if i >= rows {
 			continue
 		}
@@ -104,10 +106,10 @@ func promptGrid(rows, cols int) ([][]models.Cell, error) {
 	fmt.Println("Enter the grid:")
 
 	scanner := bufio.NewScanner(os.Stdin)
-	body := make([][]models.Cell, max(rows, x))
+	body := make([][]models.Cell, customMax(rows, x))
 
-	for i := 0; i < max(rows, x); i++ {
-		body[i] = make([]models.Cell, max(cols, y))
+	for i := 0; i < customMax(rows, x); i++ {
+		body[i] = make([]models.Cell, customMax(cols, y))
 		if i >= rows { // fullscreen
 			continue
 		}
@@ -155,9 +157,9 @@ func readInputFromFile() ([][]models.Cell, error) {
 	if _, err := fmt.Sscanf(sizeLine, "%d %d", &rows, &cols); err != nil {
 		return nil, fmt.Errorf("invalid size format in file: %w", err)
 	}
-	body := make([][]models.Cell, max(x, rows))
-	for i := 0; i < max(rows, x); i++ {
-		body[i] = make([]models.Cell, max(cols, y))
+	body := make([][]models.Cell, customMax(x, rows))
+	for i := 0; i < customMax(rows, x); i++ {
+		body[i] = make([]models.Cell, customMax(cols, y))
 		if i >= rows {
 			continue
 		}
@@ -165,7 +167,7 @@ func readInputFromFile() ([][]models.Cell, error) {
 		if len(line) < cols {
 			return nil, fmt.Errorf("number of columns in row %d (%d) does not match specified size (%d)", i, len(line), cols)
 		}
-		for j := 0; j < max(cols, y); j++ {
+		for j := 0; j < customMax(cols, y); j++ {
 			if j >= len(line) {
 				continue
 			}
@@ -184,4 +186,12 @@ func readInputFromFile() ([][]models.Cell, error) {
 
 	fmt.Printf("%d   %d\n", len(body), len(body[0]))
 	return body, nil
+}
+
+func customMax(a, b int) int {
+	if a > b {
+		return a
+	} else {
+		return b
+	}
 }
