@@ -13,7 +13,7 @@ import (
 	"golang.org/x/term"
 )
 
-func NewMatrix(isRandom bool) (*models.Board, error) {
+func newMatrix() (*models.Board, error) {
 	var body [][]models.Cell
 	if globals.FileName != "" {
 		var err error
@@ -21,7 +21,7 @@ func NewMatrix(isRandom bool) (*models.Board, error) {
 		if err != nil {
 			return nil, err
 		}
-	} else if !isRandom {
+	} else if !globals.IsRandom {
 		rows, cols, err := promptSize()
 		if err != nil {
 			return nil, err

@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func ReadFlags() bool {
+func readFlags() bool {
 	isValid := true
 
 	// Использование флагов Имя/базовое значение/описание
@@ -99,6 +99,7 @@ func flagRandom(random string, isValid *bool) {
 		*isValid = false
 		return
 	}
+	globals.IsRandom = true
 	globals.RandomX = x
 	globals.RandomY = y
 }
@@ -112,7 +113,7 @@ func flagFootPrints(isFootPrints bool) {
 }
 
 func flagFile(file string) {
-	if file == "" || globals.RandomX != 0 || globals.RandomY != 0 {
+	if file == "" || globals.IsRandom {
 		return
 	}
 	globals.FileName = file
