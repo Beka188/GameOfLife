@@ -29,7 +29,7 @@ func newMatrix() (*models.Board, error) {
 		for {
 			body, err = promptGrid(rows, cols)
 			if err != nil {
-				fmt.Println("Invalid grid. Please re-enter the grid:")
+				fmt.Println("Invalid grid. Please re-enter the grid: (. - for dead cell, # - for live cell) ")
 				continue
 			}
 			break
@@ -102,7 +102,7 @@ func promptGrid(rows, cols int) ([][]models.Cell, error) {
 	}
 	y = y / 2
 
-	fmt.Println("Enter the grid:")
+	fmt.Println("Enter the grid: (. - for dead cell, # - for live cell) ")
 
 	scanner := bufio.NewScanner(os.Stdin)
 	body := make([][]models.Cell, customMax(rows, x))
