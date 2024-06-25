@@ -4,42 +4,61 @@ import (
 	"crunch03/globals"
 	"flag"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func ReadFlags() bool {
-	var ms = flag.Int("delay-ms", 2500, "Set the animation speed in milliseconds. Default is 2500 milliseconds")
-	var isVerbose = flag.Bool("verbose", false, "Display detailed information about the simulation, including grid size, number of ticks, speed, and map name")
-	var isEdgesPortal = flag.Bool("edges-portal", false, "Enable portal edges where cells that exit the grid appear on the opposite side")
-	var isFullScreen = flag.Bool("fullscreen", false, "Adjust the grid to fit the terminal size with empty cells")
-	var isFootPrints = flag.Bool("footprints", false, "Add traces of visited cells, displayed as '∘'")
-	var isColored = flag.Bool("colored", false, "Add color to live cells and traces if footprints are enabled")
-	var randomCord = flag.String("random", "", "Generate a random grid of the specified width (W) and height (H), min size 3x3")
-	var file = flag.String("file", "", "Load the initial grid from a specified file")
+func readFlags() bool {
+	isValid := true
 
-	var isValid = true
+	// Использование флагов Имя/базовое значение/описание
+	ms := flag.Int("delay-ms", 2500, "Set the animation speed in milliseconds. Default is 2500 milliseconds")
+	isVerbose := flag.Bool("verbose", false, "Display detailed information about the simulation, including grid size, number of ticks, speed, and map name")
+	isEdgesPortal := flag.Bool("edges-portal", false, "Enable portal edges where cells that exit the grid appear on the opposite side")
+	isFullScreen := flag.Bool("fullscreen", false, "Adjust the grid to fit the terminal size with empty cells")
+	isFootPrints := flag.Bool("footprints", false, "Add traces of visited cells, displayed as '∘'")
+	isColored := flag.Bool("colored", false, "Add color to live cells and traces if footprints are enabled")
+	randomCord := flag.String("random", "", "Generate a random grid of the specified width (W) and height (H), min size 3x3")
+	file := flag.String("file", "", "Load the initial grid from a specified file")
+
+	// Разбирает все зарегистрированные флаги командной строки
 	flag.Parse()
 
+	// Перебор аргументов командной строки
+	for _, arg := range os.Args[1:] {
+		if strings.HasPrefix(arg, "--random") || strings.HasPrefix(arg, "-random") {
+			flagRandom(*randomCord, &isValid)
+		} else if strings.HasPrefix(arg, "-file") || strings.HasPrefix(arg, "--file") {
+			flagFile(*file)
+		} else if strings.HasPrefix(arg, "-verbose") || strings.HasPrefix(arg, "--verbose") {
+			flagVerbose(*isVerbose)
+		} else if strings.HasPrefix(arg, "-fullscreen") || strings.HasPrefix(arg, "--fullscreen") {
+			flagFullScreen(*isFullScreen)
+		}
+	}
+
+	// Вызов функций для всех флагов
 	flagDelayMs(*ms, &isValid)
 	flagVerbose(*isVerbose)
-	flagEdgesPortal(*isEdgesPortal)
 	flagRandom(*randomCord, &isValid)
+	flagEdgesPortal(*isEdgesPortal)
 	flagFullScreen(*isFullScreen)
 	flagColored(*isColored)
 	flagFootPrints(*isFootPrints)
 	flagFile(*file)
 
 	return isValid
-
 }
 
 func flagHelp() {
-
 }
 
 func flagVerbose(isVerbose bool) {
+	if globals.IsFullScreen {
+		return
+	}
 	globals.IsVerbose = isVerbose
 }
 
@@ -57,12 +76,15 @@ func flagEdgesPortal(isEdgesPortal bool) {
 }
 
 func flagFullScreen(isFullScreen bool) {
+	if globals.IsVerbose {
+		return
+	}
 	globals.IsFullScreen = isFullScreen
 }
 
 func flagRandom(random string, isValid *bool) {
 	coordinates := strings.Split(random, "x")
-	if random == "" {
+	if random == "" || globals.FileName != "" {
 		return
 	}
 	if len(coordinates) != 2 {
@@ -77,6 +99,7 @@ func flagRandom(random string, isValid *bool) {
 		*isValid = false
 		return
 	}
+	globals.IsRandom = true
 	globals.RandomX = x
 	globals.RandomY = y
 }
@@ -90,7 +113,7 @@ func flagFootPrints(isFootPrints bool) {
 }
 
 func flagFile(file string) {
-	if file == "" {
+	if file == "" || globals.IsRandom {
 		return
 	}
 	globals.FileName = file

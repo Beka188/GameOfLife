@@ -9,6 +9,7 @@ var (
 	IsFullScreen bool          = false
 	IsColored    bool          = false
 	IsFootPrint  bool          = false
+	IsRandom     bool          = false
 	FileName                   = ""
 	RandomX      int           = 0
 	RandomY      int           = 0
