@@ -1,6 +1,6 @@
 module crunch03
 
-go 1.23
+go 1.22.3
 
 require golang.org/x/term v0.21.0
 
